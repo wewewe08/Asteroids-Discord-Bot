@@ -16,7 +16,7 @@ class Embed(commands.Cog):
             title = "ASTEROIDS",
         )
         embed.timestamp = datetime.datetime.utcnow()
-        embed.add_field(name = "HOW TO PLAY", value = "react to the messages to move/shoot", inline = False)
+        embed.add_field(name = "HOW TO PLAY", value = "1. react to the messages to move/shoot\n2. move the rocket after you shoot an asteroid to respawn them.", inline = False)
         embed.add_field(name = "warning:", value = "DO NOT react too fast - if the rocket gets stuck, just react again", inline = False)
         embed.add_field(name = "destroy the asteroids to get points", value = grid, inline = True)
         embed.set_footer(text= f"{ctx.author.name}'s game",icon_url=url)
