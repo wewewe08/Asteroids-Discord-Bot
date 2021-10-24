@@ -1,5 +1,3 @@
-import random
-
 from discord.ext import commands
 
 class Grid(commands.Cog):
@@ -13,22 +11,17 @@ class Grid(commands.Cog):
     async def makeGrid(self, size, icon):
         #print("test")
         grid = [[[icon] * size] * size]
-        arrAsteroid = [] #array for asteroids
         arrRocket = [] #array for where the rocket is
 
-        def spawnAsteroid():
-            asteroidPos = random.randint(0, len(grid[0][0]))
-            for item in grid[0][0]:
-                arrAsteroid.append(item)
-            arrAsteroid[asteroidPos] = ":rock:"
-            return arrAsteroid
-
-        for item in grid[0][6]:
-            arrRocket.append(item)
-        arrRocket[3] = ":rocket:"
-        grid[0][6] = arrRocket
-        grid[0][0] = spawnAsteroid()
-        return grid, arrAsteroid, arrRocket    
+        asteroid = self.client.get_cog("Asteroid")
+        if asteroid is not None:
+            asteroidSpawn = await asteroid.spawnAsteroid(size, icon)
+            for item in grid[0][6]:
+                arrRocket.append(item) #put the last row in grid into the arrRocket array
+            arrRocket[3] = ":rocket:"
+            grid[0][6] = arrRocket
+            grid[0][0] = asteroidSpawn
+            return grid, asteroidSpawn, arrRocket    
 
 def setup(client):
     client.add_cog(Grid(client))
