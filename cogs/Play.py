@@ -33,17 +33,8 @@ class Play(commands.Cog):
             #setting the array variables for the grids
             gameboard, arrAsteroid, arrRocket = await gameGrid.makeGrid(grid_size, icon)
 
-            #creating the starting grid
-            def gridToString(stringVal, gameboard): #take data from the array and convert it into a String
-                for row in gameboard:
-                    for col in row:
-                        for string in col:   
-                            stringVal += string
-                        stringVal += "\n"
-                return stringVal
-
             #send the gameboard to discord as an EMBED
-            origGrid = gridToString(stringVal= "", gameboard = gameboard)
+            origGrid = await gameGrid.gridToString(stringVal= "", gameboard = gameboard)
             embed = await makeEmbed.makeEmbed(ctx, origGrid, image_url)
             message = await ctx.send(embed = embed)
 
@@ -55,26 +46,12 @@ class Play(commands.Cog):
             def checkReaction(reaction, user):
                 return user == ctx.message.author and str(reaction.emoji) in emojis
 
-            def resetEmbed(moveGrid): #update the grid embed once the player reacts
-                newGrid = gridToString(stringVal= "", gameboard = moveGrid)
-                new_embed = discord.Embed(
-                    title = "ASTEROIDS",
-                )
-                new_embed.timestamp = datetime.datetime.utcnow()
-                new_embed.add_field(name = "HOW TO PLAY", value = "1. react to the messages to move/shoot\n2. move the rocket after you shoot an asteroid to respawn them.", inline = False)
-                new_embed.add_field(name = "warning:", value = "DO NOT react too fast - if the rocket gets stuck, just react again", inline = False)
-                new_embed.add_field(name = "destroy the asteroids to get points", value = newGrid, inline = True)
-                new_embed.set_footer(text= f"{ctx.author.name}'s game",icon_url=image_url)
-                edited_message = new_embed
-                return edited_message
-
             while not game_over:  
                 #move asteroids (ARCHIVED)
                 #generator = await asteroid.moveAsteroid(gameboard, arrAsteroid)
                 #for item in generator:
                 #    await message.edit(embed = resetEmbed(item))
                 #    await asyncio.sleep(1)
-
                 asteroidShot = False
                 try:
                     reaction, user = await self.client.wait_for("reaction_add", timeout= 20.0, check = checkReaction)
@@ -90,7 +67,8 @@ class Play(commands.Cog):
                     break
                 else:
                     player = ctx.message.author
-                    await message.edit(embed = resetEmbed(move)) #reset grid
+                    reset_embed = await makeEmbed.resetEmbed(ctx, move, image_url)
+                    await message.edit(embed = reset_embed) #reset grid
                     move, arrAsteroid = await asteroid.resetBoard(gameboard, arrAsteroid, arrRocket, grid_size, icon, asteroidShot)
                     for e in emojis:
                         await message.remove_reaction(e, player)   
