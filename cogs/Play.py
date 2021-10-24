@@ -20,6 +20,7 @@ class Play(commands.Cog):
         gameGrid = self.client.get_cog("Grid")
         user_input = self.client.get_cog("Movement")
         makeEmbed = self.client.get_cog("Embed")
+        asteroid = self.client.get_cog("Asteroid")
         #gameboard aesthetics
         image_url = "https://cdn-icons-png.flaticon.com/512/1114/1114780.png"
         icon = ":black_large_square:"
@@ -28,9 +29,11 @@ class Play(commands.Cog):
         #losing condition
         game_over = False
 
-        if gameGrid is not None and user_input is not None and makeEmbed is not None:
+        if gameGrid is not None and user_input is not None and makeEmbed is not None and asteroid is not None:
+            #setting the array variables for the grids
             gameboard, arrAsteroid, arrRocket = await gameGrid.makeGrid(grid_size, icon)
 
+            #creating the starting grid
             def gridToString(stringVal, gameboard): #take data from the array and convert it into a String
                 for row in gameboard:
                     for col in row:
@@ -58,7 +61,7 @@ class Play(commands.Cog):
                     title = "ASTEROIDS",
                 )
                 new_embed.timestamp = datetime.datetime.utcnow()
-                new_embed.add_field(name = "HOW TO PLAY", value = "react to the messages to move/shoot", inline = False)
+                new_embed.add_field(name = "HOW TO PLAY", value = "1. react to the messages to move/shoot\n2. move the rocket after you shoot an asteroid to respawn them.", inline = False)
                 new_embed.add_field(name = "warning:", value = "DO NOT react too fast - if the rocket gets stuck, just react again", inline = False)
                 new_embed.add_field(name = "destroy the asteroids to get points", value = newGrid, inline = True)
                 new_embed.set_footer(text= f"{ctx.author.name}'s game",icon_url=image_url)
@@ -66,9 +69,13 @@ class Play(commands.Cog):
                 return edited_message
 
             while not game_over:  
-                #spawn asteroids
-                moveAsteroid = await user_input.moveAsteroid(gameboard, arrAsteroid)
-                await message.edit(embed = resetEmbed(moveAsteroid))
+                #move asteroids (ARCHIVED)
+                #generator = await asteroid.moveAsteroid(gameboard, arrAsteroid)
+                #for item in generator:
+                #    await message.edit(embed = resetEmbed(item))
+                #    await asyncio.sleep(1)
+
+                asteroidShot = False
                 try:
                     reaction, user = await self.client.wait_for("reaction_add", timeout= 20.0, check = checkReaction)
                     if str(reaction.emoji) == '⬅️':
@@ -76,19 +83,21 @@ class Play(commands.Cog):
                     elif str(reaction.emoji) == '➡️':
                         move = await user_input.moveRight(gameboard, arrRocket)
                     elif str(reaction.emoji) == '💥':
-                        move = await user_input.shootAsteroid(gameboard, arrRocket, arrAsteroid)
+                        move = await asteroid.shootAsteroid(gameboard, arrRocket, arrAsteroid)
+                        asteroidShot = True
                 except asyncio.TimeoutError:
-                    await ctx.send(f"> **{ctx.author.name}, you didn't react to the message so the game ended.**")
+                    await ctx.send(f"> **{ctx.author.name}, you didn't react to the message so the game ended.**") #afk player
                     break
                 else:
                     player = ctx.message.author
-                    await message.edit(embed = resetEmbed(move))
-                    move = await user_input.resetBoard(gameboard, arrAsteroid)
+                    await message.edit(embed = resetEmbed(move)) #reset grid
+                    move, arrAsteroid = await asteroid.resetBoard(gameboard, arrAsteroid, arrRocket, grid_size, icon, asteroidShot)
                     for e in emojis:
-                        await message.remove_reaction(e, player)       
+                        await message.remove_reaction(e, player)   
+                        asteroidShot = False    
 
     async def cog_command_error(self, ctx, error):
         if isinstance(error, commands.MaxConcurrencyReached):
-            await ctx.send(f"> **{ctx.author.name},  you are already in a game!**")
+            await ctx.send(f"> **{ctx.author.name},  you are already in a game!**") #player tried to run the play command more than once
 def setup(client):
     client.add_cog(Play(client))
