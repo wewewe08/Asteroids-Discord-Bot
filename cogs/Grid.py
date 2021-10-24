@@ -1,3 +1,6 @@
+import discord
+import datetime
+
 from discord.ext import commands
 
 class Grid(commands.Cog):
@@ -22,6 +25,15 @@ class Grid(commands.Cog):
             grid[0][6] = arrRocket
             grid[0][0] = asteroidSpawn
             return grid, asteroidSpawn, arrRocket    
+
+    #creating the starting grid
+    async def gridToString(self, stringVal, gameboard): #take data from the array and convert it into a String
+        for row in gameboard:
+            for col in row:
+                for string in col:   
+                    stringVal += string
+                stringVal += "\n"
+        return stringVal
 
 def setup(client):
     client.add_cog(Grid(client))
