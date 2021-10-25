@@ -9,8 +9,7 @@
 * [Contact](#contact)
 
 ## Showcase
-![ezgif com-gif-maker (1)](https://user-images.githubusercontent.com/31106392/138634620-e4bc7afe-ec4e-4312-a189-f8e0e06bcf6e.gif)
-![ezgif com-gif-maker](https://user-images.githubusercontent.com/31106392/138634242-e4e420c5-2d12-4eba-813e-b4387970521d.gif)
+![ezgif com-gif-maker](https://user-images.githubusercontent.com/31106392/138641924-c36be93e-d2ce-46ed-943e-4d54f3433cbd.gif)
 
 
 ## Technologies Used
