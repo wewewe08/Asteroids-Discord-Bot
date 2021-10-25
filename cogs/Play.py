@@ -28,7 +28,7 @@ class Play(commands.Cog):
         #game variables
         isRock = False
         points = 0
-        missles = 10
+        missles = 5
 
         if gameGrid is not None and user_input is not None and makeEmbed is not None and asteroid is not None:
             #setting the array variables for the grids
