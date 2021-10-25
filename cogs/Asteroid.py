@@ -1,6 +1,4 @@
-#import asyncio (used for moving asteroids)
 import random
-
 from discord.ext import commands
 
 class Asteroid(commands.Cog):
@@ -20,43 +18,61 @@ class Asteroid(commands.Cog):
         arrAsteroid[asteroidPos] = ":rock:"
         return arrAsteroid
 
-    #ARCHIVED
-    #async def moveAsteroid(self, gameboard, arr):
-    #    def asteroidGenerator(gameboard, arr):
-    #        col_index = 0
-    #        while col_index != 5:
-    #            print(col_index)
-    #           if gameboard[0][col_index] == arr:
-    #                gameboard[0][col_index] = gameboard[0][col_index+1]
-    #                gameboard[0][col_index+1] = arr
-    #                col_index = col_index + 1
-    #                yield gameboard
-    #            else:
-    #                break
-    #    generator = asteroidGenerator(gameboard=gameboard, arr=arr)
-    #    return generator
-    
-    async def shootAsteroid(self, gameboard, arrRocket, arrAsteroid):
-            for index in range(len(arrRocket)):
-                if arrRocket[index] == ":rocket:":
-                    rocketIndex = index
-                    if arrAsteroid[rocketIndex] == ":rock:":
-                        arrAsteroid[rocketIndex] = ":boom:"
-                    else:
-                        print("something went wrong with shooting")
-                    break
-            return gameboard
+    async def spawnCarePackage(self, size, icon):
+        arrPackages = [] #ammo package array
+        grid = [[[icon] * size] * size]
+        packagePos =  random.randint(0, len(grid[0][3]))
+        for item in grid[0][3]:
+            arrPackages.append(item)
+        arrPackages[packagePos] = ":package:"
+        return arrPackages
 
-    async def resetBoard(self, gameboard, arrAsteroid, arrRocket, size, icon, asteroidShot):
+    async def shootAsteroid(self, gameboard, arrRocket, arrAsteroid, arrPackage, missles, isRock):
+        for index in range(len(arrRocket)):
+            if arrRocket[index] == ":rocket:":
+                rocketIndex = index
+                if arrAsteroid[rocketIndex] == ":rock:" and arrPackage[index] != ":package:":
+                    arrAsteroid[rocketIndex] = ":boom:"
+                    gameboard[0][0] = arrAsteroid
+                    isRock = True
+                elif arrPackage[rocketIndex]  == ":package:":
+                    arrPackage[rocketIndex] = ":up:"
+                    missles += 1
+                    gameboard[0][3] = arrPackage
+                    isRock = False
+                else:
+                    missles -= 1
+                break
+        return gameboard, isRock, missles
+
+    async def resetBoard(self, gameboard, arrAsteroid, arrRocket, arrPackage, size, icon, asteroidShot):
         if asteroidShot:
             for index in range(len(arrAsteroid)):
-                if arrAsteroid[index] == ":boom:" and arrRocket[index] == ":rocket:":
+                if arrAsteroid[index] == ":boom:" and arrAsteroid[index] != ":package:" and arrRocket[index] == ":rocket:":
+                    #respawning asteroids
                     arrAsteroid = await self.spawnAsteroid(size, icon)
-                    gameboard[0][0] = arrAsteroid
+                    gameboard[0][0] = arrAsteroid 
+                    #respawning care packages
+                    package_spawn_rate = random.randrange(5)
+                    print(package_spawn_rate)
+                    for item in arrPackage:
+                        if item != ":package:" and package_spawn_rate == 0:
+                            arrPackage =  await self.spawnCarePackage(size, icon)
+                            gameboard[0][3] = arrPackage
+                            break
                     break
-        else:
-            pass
-        return gameboard, arrAsteroid
+                elif arrPackage[index] == ":up:" and arrRocket[index] == ":rocket:":
+                    package_spawn_rate = random.randrange(5)
+                    print(package_spawn_rate)
+                    for item in arrPackage:
+                        if item != ":package:" and package_spawn_rate == 0:
+                            arrPackage =  await self.spawnCarePackage(size, icon)
+                            gameboard[0][3] = arrPackage
+                            break
+                    else:
+                        gameboard[0][3] = [':black_large_square:', ':black_large_square:', ':black_large_square:', ':black_large_square:', ':black_large_square:', ':black_large_square:', ':black_large_square:']
+                        break
+        return gameboard, arrAsteroid, arrPackage
 
 def setup(client):
     client.add_cog(Asteroid(client))
