@@ -13,7 +13,6 @@ class Grid(commands.Cog):
 
     async def makeGrid(self, size, icon):
         grid = [[[icon] * size] * size]
-        stringGrid = [':black_large_square:', ':black_large_square:', ':black_large_square:', ':black_large_square:', ':black_large_square:', ':black_large_square:', ':black_large_square:']
         arrRocket = [] #array for where the rocket is
         asteroid = self.client.get_cog("Asteroid")
         if asteroid is not None:
