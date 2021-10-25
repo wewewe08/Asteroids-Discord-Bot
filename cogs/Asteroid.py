@@ -56,7 +56,6 @@ class Asteroid(commands.Cog):
                     gameboard[0][0] = arrAsteroid 
                     #respawning care packages
                     package_spawn_rate = random.randrange(5)
-                    print(package_spawn_rate)
                     for item in arrPackage:
                         if item != ":package:" and package_spawn_rate == 0:
                             arrPackage =  await self.spawnCarePackage(size, icon)
@@ -65,7 +64,6 @@ class Asteroid(commands.Cog):
                     break
                 elif arrPackage[index] == ":up:" and arrRocket[index] == ":rocket:":
                     package_spawn_rate = random.randrange(5)
-                    print(package_spawn_rate)
                     for item in arrPackage:
                         if item != ":package:" and package_spawn_rate == 0:
                             arrPackage =  await self.spawnCarePackage(size, icon)
