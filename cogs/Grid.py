@@ -1,6 +1,6 @@
 import discord
 import datetime
-
+import random
 from discord.ext import commands
 
 class Grid(commands.Cog):
@@ -12,22 +12,23 @@ class Grid(commands.Cog):
         print("grid is ready")
 
     async def makeGrid(self, size, icon):
-        #print("test")
         grid = [[[icon] * size] * size]
+        stringGrid = [':black_large_square:', ':black_large_square:', ':black_large_square:', ':black_large_square:', ':black_large_square:', ':black_large_square:', ':black_large_square:']
         arrRocket = [] #array for where the rocket is
-
         asteroid = self.client.get_cog("Asteroid")
         if asteroid is not None:
             asteroidSpawn = await asteroid.spawnAsteroid(size, icon)
+            packageSpawn =  await asteroid.spawnCarePackage(size, icon)
             for item in grid[0][6]:
                 arrRocket.append(item) #put the last row in grid into the arrRocket array
             arrRocket[3] = ":rocket:"
             grid[0][6] = arrRocket
             grid[0][0] = asteroidSpawn
-            return grid, asteroidSpawn, arrRocket    
+            grid[0][3] = packageSpawn
+            return grid, asteroidSpawn, arrRocket, packageSpawn
 
     #creating the starting grid
-    async def gridToString(self, stringVal, gameboard): #take data from the array and convert it into a String
+    async def gridToString(self, stringVal, gameboard): #take values from an array and convert it into a String value
         for row in gameboard:
             for col in row:
                 for string in col:   
