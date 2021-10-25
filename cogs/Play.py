@@ -45,7 +45,7 @@ class Play(commands.Cog):
             def checkReaction(reaction, user):
                 return user == ctx.message.author and str(reaction.emoji) in emojis
 
-            while missiles != 0 and points != 10:  
+            while missiles != 0 and points != 5:  
                 asteroidShot = False
                 try:
                     reaction, user = await self.client.wait_for("reaction_add", timeout= 20.0, check = checkReaction)
