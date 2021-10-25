@@ -74,7 +74,7 @@ class Play(commands.Cog):
                         await message.remove_reaction(e, player)   
                         asteroidShot = False    
             if missiles == 0 and points != 5:
-                await ctx.send(f"> ** :octagonal_sign:  you are out of missles! better luck next time, {ctx.author.name}! **")
+                await ctx.send(f"> ** :octagonal_sign:  you are out of missiles! better luck next time, {ctx.author.name}! **")
             elif missiles >= 0 and points == 5:
                 await ctx.send(f"> ** :medal: congratulations, {ctx.author.name}, you won!**")
 
