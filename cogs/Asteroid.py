@@ -35,14 +35,16 @@ class Asteroid(commands.Cog):
                     arrAsteroid[rocketIndex] = ":boom:"
                     gameboard[0][0] = arrAsteroid
                     isRock = True
+                    break
                 elif arrPackage[rocketIndex]  == ":package:":
                     arrPackage[rocketIndex] = ":up:"
                     missles += 1
                     gameboard[0][3] = arrPackage
                     isRock = False
+                    break
                 else:
                     missles -= 1
-                break
+                    break
         return gameboard, isRock, missles
 
     async def resetBoard(self, gameboard, arrAsteroid, arrRocket, arrPackage, size, icon, asteroidShot):
@@ -53,7 +55,7 @@ class Asteroid(commands.Cog):
                     arrAsteroid = await self.spawnAsteroid(size, icon)
                     gameboard[0][0] = arrAsteroid 
                     #respawning care packages
-                    package_spawn_rate = random.randrange(5)
+                    package_spawn_rate = random.randrange(10)
                     print(package_spawn_rate)
                     for item in arrPackage:
                         if item != ":package:" and package_spawn_rate == 0:
@@ -62,7 +64,7 @@ class Asteroid(commands.Cog):
                             break
                     break
                 elif arrPackage[index] == ":up:" and arrRocket[index] == ":rocket:":
-                    package_spawn_rate = random.randrange(5)
+                    package_spawn_rate = random.randrange(10)
                     print(package_spawn_rate)
                     for item in arrPackage:
                         if item != ":package:" and package_spawn_rate == 0:
