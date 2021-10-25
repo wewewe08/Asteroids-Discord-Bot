@@ -27,7 +27,7 @@ class Asteroid(commands.Cog):
         arrPackages[packagePos] = ":package:"
         return arrPackages
 
-    async def shootAsteroid(self, gameboard, arrRocket, arrAsteroid, arrPackage, missles, isRock):
+    async def shootAsteroid(self, gameboard, arrRocket, arrAsteroid, arrPackage, missiles, isRock):
         for index in range(len(arrRocket)):
             if arrRocket[index] == ":rocket:":
                 rocketIndex = index
@@ -38,14 +38,14 @@ class Asteroid(commands.Cog):
                     break
                 elif arrPackage[rocketIndex]  == ":package:":
                     arrPackage[rocketIndex] = ":up:"
-                    missles += 1
+                    missiles += 1
                     gameboard[0][3] = arrPackage
                     isRock = False
                     break
                 else:
-                    missles -= 1
+                    missiles -= 1
                     break
-        return gameboard, isRock, missles
+        return gameboard, isRock, missiles
 
     async def resetBoard(self, gameboard, arrAsteroid, arrRocket, arrPackage, size, icon, asteroidShot):
         if asteroidShot:
