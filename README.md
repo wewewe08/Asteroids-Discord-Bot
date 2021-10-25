@@ -3,7 +3,6 @@
 ## Table of Contents
 * [Showcase](#showcase)
 * [Technologies Used](#technologies-used)
-* [Screenshots](#screenshots)
 * [Project Status](#project-status)
 * [Room for Improvement](#room-for-improvement)
 * [Contact](#contact)
