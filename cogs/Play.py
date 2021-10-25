@@ -75,7 +75,7 @@ class Play(commands.Cog):
                         asteroidShot = False    
             if missles == 0 and points != 10:
                 await ctx.send(f"> ** :octagonal_sign:  you are out of missles! better luck next time, {ctx.author.name}! **")
-            elif points == 10:
+            elif missles >= 0 and points == 5:
                 await ctx.send(f"> ** :medal: congratulations, {ctx.author.name}, you won!**")
 
     async def cog_command_error(self, ctx, error):
